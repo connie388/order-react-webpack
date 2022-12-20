@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import InputField from "./InputField";
 import Button from "./Button";
-
+import { createEndpoint } from "../services/CreateEndPoint";
+import { ENDPOINTS } from "../services/CreateEndPoint";
 const AddProductLineForm = () => {
   // Bind the input fields
   const [inputValue, setInputValue] = useState({
@@ -24,16 +25,19 @@ const AddProductLineForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // for debug only
-    alert(
-      `Submitting  ${inputValue.productLine} ${inputValue.textDescription} ${inputValue.htmlDescription} ${inputValue.imageUrl}`
-    );
-    setInputValue({
-      productLine: "",
-      textDescription: "",
-      htmlDescription: "",
-      imageUrl: "",
-    });
+    createEndpoint(ENDPOINTS.PRODUCTLINE)
+      .create(inputValue)
+      .then((res) => {
+        console.log(res.data);
+        alert(`Record added.`);
+        setInputValue({
+          productLine: "",
+          textDescription: "",
+          htmlDescription: "",
+          imageUrl: "",
+        });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -72,6 +76,11 @@ const AddProductLineForm = () => {
           label="Enter Image URL"
           name="imageUrl"
           onChange={handleChange}
+        />
+        <img
+          class="object-fit h-48 w-96"
+          src={inputValue.imageUrl}
+          alt="Product Line img"
         />
 
         <div className="center">
